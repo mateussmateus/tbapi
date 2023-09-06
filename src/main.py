@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from model.paciente import Paciente
 from model.convenio import Convenio
@@ -37,7 +38,15 @@ from business.atendimento_business import cadastrar_atendimento, \
     deleta_atendimento
 
 app = FastAPI()
+origins = ["*"]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 ##INICIO PACIENTE
 @app.post("/cadastra_paciente/")
 def post_cadastra_paciente(nome_paciente: Paciente):    
@@ -129,7 +138,7 @@ def delete_deleta_procedimento(codigo_procedimento: Procedimento):
 
 ##INICIO PROCEDIMENTO
 @app.post("/cadastra_atendimento/")
-def post_cadastrar_atendimento(atendimento: Atendimento):    
+async def post_cadastrar_atendimento(atendimento: Atendimento):    
     return cadastrar_atendimento(atendimento)
 
 @app.get("/consulta_todos_atendimentos")
